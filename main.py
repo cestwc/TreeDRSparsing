@@ -317,9 +317,9 @@ def run_test(args):
 	actn_v = vocabulary(UNK=False)
 	#pretrain = Magnitude(args.pretrain_path)
 	pretrain = {}
-		for line in open(args.pretrain_path):
-			line = line.strip().split()
-			pretrain[line[0]] = [float(x) for x in line[1:]]
+	for line in open(args.pretrain_path):
+		line = line.strip().split()
+		pretrain[line[0]] = [float(x) for x in line[1:]]
 
 	actn_v.toidx("<START>")
 	actn_v.toidx("<END>")
