@@ -317,9 +317,9 @@ def run_test(args):
 	actn_v = vocabulary(UNK=False)
 	#pretrain = Magnitude(args.pretrain_path)
 	pretrain = {}
-        for line in open(args.pretrain_path):
-                line = line.strip().split()
-                pretrain[line[0]] = [float(x) for x in line[1:]]
+		for line in open(args.pretrain_path):
+			line = line.strip().split()
+			pretrain[line[0]] = [float(x) for x in line[1:]]
 
 	actn_v.toidx("<START>")
 	actn_v.toidx("<END>")
@@ -392,9 +392,9 @@ def run_test(args):
 	decoder = dec(actn_v.size(), args, actn_v)
 
 	check_point = torch.load(args.model_path_base+"/model")
-	encoder.load_state_dict(check_point["encoder"])
-	decoder.load_state_dict(check_point["decoder"])
-	input_representation.load_state_dict(check_point["input_representation"])
+	encoder.load_state_dict({k: check_point["encoder"][k] for k in encoder.state_dict()})
+	decoder.load_state_dict({k: check_point["decoder"]['copy_head.weight'] if k == 'copy_matrix.weight' else  torch.cat((check_point["decoder"]['feat.weight'][:, :600], check_point["decoder"]['feat.weight'][:, 1200:]), 1) if k == 'feat.weight' else check_point["decoder"][k] for k in decoder.state_dict()})
+	input_representation.load_state_dict({k: check_point["input_representation"][k] for k in input_representation.state_dict()})
 
 	if args.gpu:
 		encoder = encoder.cuda()
@@ -403,7 +403,7 @@ def run_test(args):
 	
 
 	
-	test_instance, word_v, char_v, extra_vl = input2instance(test_input, word_v, char_v, pretrain, extra_vl, {}, args, "dev")
+	test_instance, word_v, char_v, extra_vl = input2instance(test_input, word_v, char_v, extra_vl, {}, args, "dev")
 
 	cstns1 = cstn_step1(actn_v, args)
 	cstns2 = cstn_step2(actn_v, args, starts, ends)
