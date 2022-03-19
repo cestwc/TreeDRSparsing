@@ -92,7 +92,7 @@ def tree2oracle(lemmas, tree, out_action):
 				pass
 				
 		else:
-			print parent
+			print(parent)
 			assert False
 	travel(root)
 	#for tok in tree:
@@ -181,7 +181,7 @@ if __name__ == "__main__":
 			words = " ||| ".join([ lines[i*2] for i in range(idx/2) ])
 
 			tree = lines[idx+1].split()
-			if filter(illform, tree):
+			if list(filter(illform, tree)):
 				lines = []
 				continue
 
