@@ -32,7 +32,7 @@ class vocabulary:
 		else:
 			return 0
 	def totok(self, idx):
-		assert idx < self.size, "Out of Vocabulary"
+		assert idx < self.size(), "Out of Vocabulary"
 		return self._itt[idx]
 	def size(self):
 		return len(self._tti)
