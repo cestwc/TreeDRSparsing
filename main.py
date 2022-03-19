@@ -213,7 +213,7 @@ def run_train(args):
 		for j in range(len(flat_train_action)):
 			tok = flat_train_action[j]
 			#print tok
-			if (type(tok) == bytes and tok[-1] == "(") or actn_v.totok(tok)[-1] == "(":
+			if (type(tok) == str and tok[-1] == "(") or actn_v.totok(tok)[-1] == "(":
 				train_action_step3.append([hidden_rep_t[j], train_action[i][2][idx]])
 				#train_pointer_step3 += train_action[i][5][idx]
 				idx += 1
@@ -915,7 +915,7 @@ def run_check(args):
 					cstn = cstns2.get_step_mask()
 					#cstns2._print_state()
 
-					if type(a) == bytes:
+					if type(a) == str:
 						#print a
 						assert cstn[int(a[1:-1])+actn_v.size()] == 1
 					else:
@@ -923,8 +923,8 @@ def run_check(args):
 						assert cstn[a] == 1
 					cstns2.update(a)
 
-					if type(a) == bytes or a != actn_v.toidx(")"):
-						if type(a) == bytes:
+					if type(a) == str or a != actn_v.toidx(")"):
+						if type(a) == str:
 							a = int(a[1:-1])+actn_v.size()
 						cstns3.reset_relation(a)
 						for v in action_step3[idx2]:
@@ -996,19 +996,19 @@ if __name__ == "__main__":
 	subparser.add_argument("--soft-const", action="store_true")
 
 	subparser = subparsers.add_parser("easy")
-        subparser.set_defaults(callback=lambda args: easy_use(args))
-        assign_hypers(subparser, hypers)
-        subparser.add_argument("--model-path-base", required=True)
-        subparser.add_argument("--test-output", required=True)
-        subparser.add_argument("--test-input", required=True)
-        subparser.add_argument("--pretrain-path")
-        subparser.add_argument("--beam-size", type=int, default=1)
-        subparser.add_argument("--action-dict-path", required=True)
-        subparser.add_argument("--use-char", action='store_true')
-        subparser.add_argument("--gpu", action='store_true')
-        subparser.add_argument("--encoder", default="BILSTM", help="BILSTM, Transformer")
-        subparser.add_argument("--const", action="store_true")
-        subparser.add_argument("--soft-const", action="store_true")
+	subparser.set_defaults(callback=lambda args: easy_use(args))
+	assign_hypers(subparser, hypers)
+	subparser.add_argument("--model-path-base", required=True)
+	subparser.add_argument("--test-output", required=True)
+	subparser.add_argument("--test-input", required=True)
+	subparser.add_argument("--pretrain-path")
+	subparser.add_argument("--beam-size", type=int, default=1)
+	subparser.add_argument("--action-dict-path", required=True)
+	subparser.add_argument("--use-char", action='store_true')
+	subparser.add_argument("--gpu", action='store_true')
+	subparser.add_argument("--encoder", default="BILSTM", help="BILSTM, Transformer")
+	subparser.add_argument("--const", action="store_true")
+	subparser.add_argument("--soft-const", action="store_true")
 
 	subparser = subparsers.add_parser("check")
 	subparser.set_defaults(callback=lambda args: run_check(args))
