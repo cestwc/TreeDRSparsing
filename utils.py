@@ -26,8 +26,8 @@ def get_lemmas(tokens):
 		if pos_tag == None:
 			lemmas.append(word.lower())
 		else:
-			lemmas.append(lemmatizer.lemmatize(word.lower().decode("utf8"), pos_tag))
-		lemmas[-1] = lemmas[-1].encode("utf8")
+			lemmas.append(lemmatizer.lemmatize(word.lower(), pos_tag))
+		lemmas[-1] = lemmas[-1]
 	return lemmas
 def read_input_test(filename):
 	data = [[]]
