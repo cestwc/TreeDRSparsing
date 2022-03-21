@@ -634,7 +634,7 @@ class Demo:
 				idx = int(trees[j][1:-1])
 				trees[j] = lems[cur][idx]+"("
 			j += 1
-		print((" ".join(trees)))
+		return " ".join(trees)
 
 	def test(self, docs):
 		tokenizer = nltk.tokenize.TreebankWordTokenizer()
