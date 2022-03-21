@@ -3,30 +3,32 @@ The codes for the paper "Discourse Representation Parsing for Sentences and Docu
 
 ## The requirements
 
-    python 2.7
-    pytorch 0.4.1
+    python 3.7
+    pytorch 1.10.0+cu111
   
 ## Prepare
 Clone the codes on the branch DRTS
 
-    git clone -b bs_sattn_drssup https://github.com/LeonCrashCode/TreeDRSparsing.git
-    cd TreeDRSparsing/workspace/gd_sys1
+    git clone -b py37 https://github.com/cestwc/TreeDRSparsing.git
     
 Download the dataset from https://drive.google.com/open?id=1nayRyFiT_-vHaf6-oyVwHaEK79CYzMpU, move them to the folder data/; Download the pretrained vector from https://drive.google.com/open?id=1ICyISR-0PhuQYxIsqE5P7_r-OCsETIEU, move it to the folder embeddings/ (ensure each line is a word representation).
 
-    cd data
+```python
+import sys
+sys.path.append('TreeDRSparsing')
+
+import nltk
+nltk.download('averaged_perceptron_tagger')
+nltk.download('wordnet')
+```
+
+    ls data
     data/trn.tree.align_drs
     data/dev.tree.align_drs
     data/tst.tree.align_drs
     data/dict
     
-    ln -s ../../../scripts/tree2oracle_doc_drs.py
-    
-    python tree2oracle_doc_drs.py trn.tree.align_drs
-    python tree2oracle_doc_drs.py dev.tree.align_drs
-    python tree2oracle_doc_drs.py tst.tree.align_drs
-    
-The oracles are got as:
+See branch `bs_sattn_drssup` to get the oracles as:
   
     data/trn.tree.align_drs.oracle.doc.*
     data/dev.tree.align_drs.oracle.doc.*
@@ -35,39 +37,15 @@ The oracles are got as:
 ## Training
 Using the command below for training:
 
-    cd ..  # to the folder TreeDRSparsing/workspace/gd_sys1
-    ln -s ../../DRS_config
-    bash train.sh
+    python TreeDRSparsing/main.py train --gpu --model-path-base models --pretrain-path embeddings/sskip.100.vectors --action-dict-path data/dict --train-input data/trn.tree.align_drs.oracle.doc.in --train-action data/trn.tree.align_drs.oracle.doc.out --check-per-update 100 --eval-per-update 5000 --optimizer adam
     
 The models are save in the foler models, for each checkpoint, a model will be saved e.g. model1.
 
 ## Evaluation
-For each checkpoint, we need to see the F1 score on development dataset
+Using the command below for validating each checkpoint, see branch `bs_sattn_drssup` to see the F1 score on development dataset.
 
-    mkdir dev_outputs
-    bash bash_dev.sh
+    python TreeDRSparsing/main.py test --gpu --model-path-base models --pretrain-path embeddings/sskip.100.vectors --action-dict-path data/dict --test-input data/dev.tree.align_drs.oracle.doc.in --test-output dev_outputs_tmp --const --beam-size 1
+
     
-    cd dev_outputs
-    ln -s ../data/dev.tree.align_drs.oracle.doc.in
-    ln -s ../data/dev.tree.align_drs.oracle.doc.out
-    ln -s ../../scripts/oracle2tree_drs.py
-    ln -s ../../scripts/tree2tuple.py
-    ln -s ../../scripts/counter_gmb.py
- 
-    python oracle2tree_drs.py dev.tree.align_drs.oracle.doc.in dev.tree.align_drs.oracle.doc.out > dev.tree.align_drs.gold
-    python tree2tuple.py --input dev.tree.align_drs.gold > dev.tuple.align_drs.gold
-    python oracle2tree_drs.py dev.tree.align_drs.oracle.doc.in dev_output > dev.tree.align_drs.output
-    python tree2tuple.py --input dev.tree.align_drs.output > dev.tuple.align_drs.output
-    
-    python counter_gmb.py -f1 dev.tuple.align_drs.gold -f2 dev.tuple.align_drs.output -pr -r 100 -p 10
-    
-We choose the model with the highest F1 on develpment dataset as the final model, and trained model can be download from https://drive.google.com/open?id=1rzr4nd67tGHNo6T099e_FDxZkBVRFwbB.
-
-## Easy-use
-Download the pretrained model and move it to director workspace/gd_sys1
-
-    cd TreeDRSparsing/workspace/gd_sys1
-    tar -xvf models.tar
-    bash easy.sh sample
-
+Authors choose the model with the highest F1 on develpment dataset as the final model, and trained model can be download from https://drive.google.com/open?id=1rzr4nd67tGHNo6T099e_FDxZkBVRFwbB.
 
