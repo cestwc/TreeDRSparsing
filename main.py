@@ -657,7 +657,7 @@ class Demo:
 		test_instance, _, _, _ = input2instance(test_input, self.word_v, self.char_v, self.pretrain, self.extra_vl, {}, self.args, "dev")
 
 		test_output = self.decode(test_instance, test_sep, test_comb)
-		self.out_tree(doc_lems, test_output)
+		return self.out_tree(doc_lems, test_output)
 	def decode(self, test_instance, test_sep, test_comb):
 	
 		state_step1 = struct_constraints_state()
