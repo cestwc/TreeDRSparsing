@@ -49,3 +49,7 @@ Using the command below for validating each checkpoint, see branch `bs_sattn_drs
     
 Authors choose the model with the highest F1 on develpment dataset as the final model, and trained model can be download from https://drive.google.com/open?id=1rzr4nd67tGHNo6T099e_FDxZkBVRFwbB.
 
+##To get branch `py37` from `bs_sattn_drssup`:
+
+    apt-get install -y 2to3
+    2to3 --output-dir=TreeDRSparsing -W -n TreeDRSparsing
